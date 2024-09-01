@@ -63,7 +63,7 @@ find $BASE/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\
         FILE=$(echo "$MUSIC" | rev | cut -d'/' -f 1 | rev)
         FILEMP3="${FILE/flac/mp3}"
         ARTALBOLD=$ARTALB
-        BASECONTROL=(echo "$MUSIC" | cut -d'/' -f 1-5)
+        BASECONTROL=$(echo "$MUSIC" | cut -d'/' -f 1-5)
         if [ $NUMCHAR -gt "7" ]
             then
             SUPPORT=$(echo "$MUSIC" | rev | cut -d'/' -f 2 | rev)
