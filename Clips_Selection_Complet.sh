@@ -1,15 +1,15 @@
 #!/bin/bash
 ############################################################################## 
 #                                                                            #
-#	SHELL: !/bin/bash       version 3.7                                      #
+#	SHELL: !/bin/bash       version 4                                        #
 #									                                         #
-#	NOM: BEUGNET							                                 #
+#	NOM: u2pitchjami						                                 #
 #									                                         #
-#	PRENOM: Thierry							                                 #
+#	            							                                 #
 #									                                         #
-#	DATE: 22/08/2024	           				                             #
+#	DATE: 01/09/2024	           				                             #
 #								                                    	     #
-#	BUT: Sélectionne les fichiers flac techno/house	                         #
+#	BUT: Sélectionne les fichiers flac techno/house	: scan complet           #
 #									                                         #
 ############################################################################## 
 
@@ -45,7 +45,7 @@ echo "[`date`] - Let's go" | tee -a $LOG
 
 echo "Liste des fichiers sans aucun genre spécifié : " >> $LOGPASGENRE
 echo "Liste des albums sans aucun genre spécifié : " >> $LOGPASGENREALBUM
-find "$BASE"/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\0' MUSIC
+find $BASE/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\0' MUSIC
     do
         MUSICTEST=$(echo $MUSIC | tr "[:upper:]" "[:lower:]")
         if [[ "$MUSICTEST" == *.flac ]]
@@ -63,6 +63,7 @@ find "$BASE"/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $
         FILE=$(echo "$MUSIC" | rev | cut -d'/' -f 1 | rev)
         FILEMP3="${FILE/flac/mp3}"
         ARTALBOLD=$ARTALB
+        BASECONTROL=(echo "$MUSIC" | cut -d'/' -f 1-5)
         if [ $NUMCHAR -gt "7" ]
             then
             SUPPORT=$(echo "$MUSIC" | rev | cut -d'/' -f 2 | rev)
@@ -194,7 +195,7 @@ find "$BASE"/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $
                 
             fi
         fi
-        NBARTALB=$(find "$BASE/$ARTALB"/* \( -iname "*.flac" -o -iname "*.mp3" \) | wc -l)
+        NBARTALB=$(find "$BASECONTROL/$ARTALB"/* \( -iname "*.flac" -o -iname "*.mp3" \) | wc -l)
         AAAARTALBPASOK=$(cat TEMP/AAAARTALBPASOK)
         AAAARTALBOK=$(cat TEMP/AAAARTALBOK)
         AAAARTALBPASGENRE=$(cat TEMP/AAAARTALBPASGENRE)

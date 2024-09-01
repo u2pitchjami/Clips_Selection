@@ -1,15 +1,15 @@
 #!/bin/bash
 ############################################################################## 
 #                                                                            #
-#	SHELL: !/bin/bash       version 2.7                                      #
+#	SHELL: !/bin/bash       version 3                                        #
 #									                                         #
-#	NOM: BEUGNET							                                 #
+#	NOM: u2pitchjami						                                 #
 #									                                         #
-#	PRENOM: Thierry							                                 #
+#	            							                                 #
 #									                                         #
-#	DATE: 28/08/2024	           				                             #
+#	DATE: 01/09/2024	           				                             #
 #								                                    	     #
-#	BUT: Sélectionne les fichiers flac techno/house	                         #
+#	BUT: Sélectionne les fichiers flac techno/house	: modifs uniquement      #
 #									                                         #
 ############################################################################## 
 
@@ -45,11 +45,11 @@ echo "[`date`] - Let's go" | tee -a $LOG
 
 echo "Liste des fichiers sans aucun genre spécifié : " >> $LOGPASGENRE
 echo "Liste des albums sans aucun genre spécifié : " >> $LOGPASGENREALBUM
-sed -i '/^[[:space:]]*$/d' "${FICHIERAJOUTS}"
-NBLIGNES=$(cat "${FICHIERAJOUTS}" | wc -l)
+sed -i '/^[[:space:]]*$/d' "${ACHECKER}"
+NBLIGNES=$(cat "${ACHECKER}" | wc -l)
     for ((a=1 ;a<=$NBLIGNES ;a++))
         do
-            LIGNE=$(cat "${FICHIERAJOUTS}" | head -$a | tail +$a)
+            LIGNE=$(cat "${ACHECKER}" | head -$a | tail +$a)
             
             find "$LIGNE"/* \( -iname "*.flac" -o -iname "*.mp3" \) 2>> $LOG
             
@@ -61,7 +61,8 @@ NBLIGNES=$(cat "${FICHIERAJOUTS}" | wc -l)
                     NUMCHAR=$(awk -F"${CHAR}" '{print NF-1}' <<< "${MUSIC}")
                     FILE=$(echo "$MUSIC" | rev | cut -d'/' -f 1 | rev)
                     FILEMP3="${FILE/flac/mp3}"
-                    ARTALBOLD=$ARTALB                      
+                    ARTALBOLD=$ARTALB
+                    BASECONTROL=(echo "$MUSIC" | cut -d'/' -f 1-5)                     
                     if [ $NUMCHAR -gt "7" ]
                         then
                             SUPPORT=$(echo "$MUSIC" | rev | cut -d'/' -f 2 | rev)
@@ -191,7 +192,7 @@ NBLIGNES=$(cat "${FICHIERAJOUTS}" | wc -l)
                                 
                             fi
                         fi
-                    NBARTALB=$(find "$BASE/$ARTALB"/* \( -iname "*.flac" -o -iname "*.mp3" \) | wc -l)
+                    NBARTALB=$(find "$BASECONTROL/$ARTALB"/* \( -iname "*.flac" -o -iname "*.mp3" \) | wc -l)
         AAAARTALBPASOK=$(cat TEMP/AAAARTALBPASOK)
         AAAARTALBOK=$(cat TEMP/AAAARTALBOK)
         AAAARTALBPASGENRE=$(cat TEMP/AAAARTALBPASGENRE)
@@ -260,5 +261,5 @@ echo "[`date`] - $AAAOK fichiers sélectionnés ($PCOK %)" | tee -a $LOG
 echo "[`date`] - $AAAPASGENRE fichiers avec aucun genre spécifié ($PCPG %)" | tee -a $LOG
 echo "" | tee -a $LOG
 echo "[`date`] - Voilà c'est fini, bisous" | tee -a $LOG
-echo "" > $FICHIERAJOUTS
+echo "" > $ACHECKER
 rm -r TEMP

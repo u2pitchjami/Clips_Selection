@@ -1,0 +1,14 @@
+BASE=/path/to/musical/Collection*
+BASE2=/path/to/link
+BASE3=/path/to/copy
+BASESERVEUR=/path/to/musical/Collection#for link if source client is different
+DATE=$(date "+%Y-%m-%d")
+DAY=$(date +%w)
+DOSLOG=/path/to/logs/
+LOG=${DOSLOG}/${DATE}-Clips_Selection_Complet.txt
+LOGPASGENRE=${DOSLOG}/${DATE}-Clips_Selection_PasdeGenre_Complet_.txt
+LOGPASGENREALBUM=${DOSLOG}/${DATE}-Clips_Selection_PasdeGenreparAlbum_Complet.txt
+LOGNONOK=${DOSLOG}/${DATE}-Clips_Selection_RejetGenre_Complet.txt
+LOGNONOKALBUM=${DOSLOG}/${DATE}-Clips_Selection_RejetGenreparAlbum_Complet.txt
+LOGACHECKER=${DOSLOG}/${DATE}-Clips_Selection_AChecker_Complet.txt
+LOGAJOUTS=${DOSLOG}/${DATE}-Clips_Selection_Ajouts_Complet.txt
