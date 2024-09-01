@@ -1,7 +1,7 @@
 #!/bin/bash
 ############################################################################## 
 #                                                                            #
-#	SHELL: !/bin/bash       version 3.5                                      #
+#	SHELL: !/bin/bash       version 3.7                                      #
 #									                                         #
 #	NOM: BEUGNET							                                 #
 #									                                         #
@@ -61,7 +61,7 @@ find "$BASE"/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $
         CHAR="/"
         NUMCHAR=$(awk -F"${CHAR}" '{print NF-1}' <<< "${MUSIC}")
         FILE=$(echo "$MUSIC" | rev | cut -d'/' -f 1 | rev)
-        NAME=$(echo "$FILE" | cut -d'.' -f 1)
+        FILEMP3="${FILE/flac/mp3}"
         ARTALBOLD=$ARTALB
         if [ $NUMCHAR -gt "7" ]
             then
@@ -158,21 +158,21 @@ find "$BASE"/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $
                 AAAARTALBAJOUTS=$(expr $AAAARTALBAJOUTS + 1 )
                 echo $AAAARTALBAJOUTS > TEMP/AAAARTALBAJOUTS
             fi
-            if [ -f "${BASE2}/${ARTALB}/${FILE}" ]
+            if [[ -f "${BASE2}/${ARTALB}/${FILE}" ]]
                 then
                 AAAARTALBLIENS=$(cat TEMP/AAAARTALBLIENS)
                 AAAARTALBLIENS=$(expr $AAAARTALBLIENS + 1 )
                 echo $AAAARTALBLIENS > TEMP/AAAARTALBLIENS
                 #echo "AAAARTALBLIENS : $AAAARTALBLIENS"
             fi
-            if [ ! -f "${BASE3}/${ARTALB}/${FILE}" ]
+            if [[ ! -f "${BASE3}/${ARTALB}/${FILE}" && ! -f "${BASE3}/${ARTALB}/${FILEMP3}" ]]
                 then
                 cp "${BASESERVEUR}/${ARTALB}/${FILE}" "${BASE3}/${ARTALB}/${FILE}" 2> >(tee -a $LOG)
                 AAAARTALBAJOUTS=$(cat TEMP/AAAARTALBAJOUTS)
                 AAAARTALBAJOUTS=$(expr $AAAARTALBAJOUTS + 1 )
                 echo $AAAARTALBAJOUTS > TEMP/AAAARTALBAJOUTS
             fi
-            if [ -f "${BASE3}/${ARTALB}/${FILE}" ]
+            if [[ -f "${BASE3}/${ARTALB}/${FILE}" || -f "${BASE3}/${ARTALB}/${FILEMP3}" ]]
                 then
                 AAAARTALBCOPIES=$(cat TEMP/AAAARTALBCOPIES)
                 AAAARTALBCOPIES=$(expr $AAAARTALBCOPIES + 1 )

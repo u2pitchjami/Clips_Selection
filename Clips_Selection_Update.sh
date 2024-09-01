@@ -1,7 +1,7 @@
 #!/bin/bash
 ############################################################################## 
 #                                                                            #
-#	SHELL: !/bin/bash       version 2.5                                      #
+#	SHELL: !/bin/bash       version 2.7                                      #
 #									                                         #
 #	NOM: BEUGNET							                                 #
 #									                                         #
@@ -60,6 +60,7 @@ NBLIGNES=$(cat "${FICHIERAJOUTS}" | wc -l)
                     CHAR="/"
                     NUMCHAR=$(awk -F"${CHAR}" '{print NF-1}' <<< "${MUSIC}")
                     FILE=$(echo "$MUSIC" | rev | cut -d'/' -f 1 | rev)
+                    FILEMP3="${FILE/flac/mp3}"
                     ARTALBOLD=$ARTALB                      
                     if [ $NUMCHAR -gt "7" ]
                         then
@@ -163,14 +164,14 @@ NBLIGNES=$(cat "${FICHIERAJOUTS}" | wc -l)
                                     echo $AAAARTALBLIENS > TEMP/AAAARTALBLIENS
                                     
                                 fi
-                                if [ ! -f "${BASE3}/${ARTALB}/${FILE}" ]
+                                if [[ ! -f "${BASE3}/${ARTALB}/${FILE}" && ! -f "${BASE3}/${ARTALB}/${FILEMP3}" ]]
                                     then
                                     cp "${BASESERVEUR}/${ARTALB}/${FILE}" "${BASE3}/${ARTALB}/${FILE}" 2> >(tee -a $LOG)
                                     AAAARTALBAJOUTS=$(cat TEMP/AAAARTALBAJOUTS)
                                     AAAARTALBAJOUTS=$(expr $AAAARTALBAJOUTS + 1 )
                                     echo $AAAARTALBAJOUTS > TEMP/AAAARTALBAJOUTS
                                 fi
-                                if [ -f "${BASE3}/${ARTALB}/${FILE}" ]
+                                if [[ -f "${BASE3}/${ARTALB}/${FILE}" || -f "${BASE3}/${ARTALB}/${FILEMP3}" ]]
                                     then
                                     AAAARTALBCOPIES=$(cat TEMP/AAAARTALBCOPIES)
                                     AAAARTALBCOPIES=$(expr $AAAARTALBCOPIES + 1 )
