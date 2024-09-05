@@ -14,7 +14,7 @@
 ############################################################################## 
 
 #définition des variables
-source .config_update.cfg
+source /home/pipo/bin/Clips_Selection/.config_update.cfg
 if [ -d TEMP ]
 then
 rm -r TEMP
@@ -167,7 +167,7 @@ NBLIGNES=$(cat "${ACHECKER}" | wc -l)
                                 fi
                                 if [[ ! -f "${BASE3}/${ARTALB}/${FILE}" && ! -f "${BASE3}/${ARTALB}/${FILEMP3}" ]]
                                     then
-                                    cp "${BASESERVEUR}/${ARTALB}/${FILE}" "${BASE3}/${ARTALB}/${FILE}" 2> >(tee -a $LOG)
+                                    cp "${BASESERVEUR}/${ARTALB}/${FILE}" "${BASE3}/${ARTALB}/${FILE}" 2>> (tee -a $LOG)
                                     AAAARTALBAJOUTS=$(cat TEMP/AAAARTALBAJOUTS)
                                     AAAARTALBAJOUTS=$(expr $AAAARTALBAJOUTS + 1 )
                                     echo $AAAARTALBAJOUTS > TEMP/AAAARTALBAJOUTS
