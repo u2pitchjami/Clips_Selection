@@ -35,24 +35,19 @@ echo 0 > TEMP/AAAARTALBRSGAIN
 echo 0 > TEMP/AAAARTALBLIENS
 echo 0 > TEMP/AAAARTALBCOPIES
 echo 0 > TEMP/AAAARTALBAJOUTS
-touch $LOG
-touch $LOGNONOK
-touch $LOGPASGENRE
-touch $LOGPASGENREALBUM
-touch $LOGACHECKER
-touch $LOGAJOUTS
+
 echo "[`date`] - Let's go" | tee -a $LOG
 
-echo "Liste des fichiers sans aucun genre spécifié : " >> $LOGPASGENRE
-echo "Liste des albums sans aucun genre spécifié : " >> $LOGPASGENREALBUM
 sed -i '/^[[:space:]]*$/d' "${ACHECKER}"
+#######################TRAITEMENT DU FICHIER ACHECKER###################################
 NBLIGNES=$(cat "${ACHECKER}" | wc -l)
+echo "[`date`] - "$NBLIGNES" lignes à traiter" | tee -a $LOG
     for ((a=1 ;a<=$NBLIGNES ;a++))
         do
             LIGNE=$(cat "${ACHECKER}" | head -$a | tail +$a)
-            
+            echo "[`date`] - Traitement de la ligne $a : "$LIGNE"" | tee -a $LOG
             find "$LIGNE"/* \( -iname "*.flac" -o -iname "*.mp3" \) 2>> $LOG
-            
+#######################RECHERCHE DES FICHIERS MUSICAUX###################################            
             find "$LIGNE"/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\0' MUSIC
                 do
                 
@@ -62,7 +57,8 @@ NBLIGNES=$(cat "${ACHECKER}" | wc -l)
                     FILE=$(echo "$MUSIC" | rev | cut -d'/' -f 1 | rev)
                     FILEMP3="${FILE/flac/mp3}"
                     ARTALBOLD=$ARTALB
-                    BASECONTROL=$(echo "$MUSIC" | cut -d'/' -f 1-5)                     
+                    BASECONTROL=$(echo "$MUSIC" | cut -d'/' -f 1-5)
+                    echo "Traitement du fichier "$MUSICTEST"" | tee -a $LOG                     
                     if [ $NUMCHAR -gt "7" ]
                         then
                             SUPPORT=$(echo "$MUSIC" | rev | cut -d'/' -f 2 | rev)
@@ -92,7 +88,7 @@ NBLIGNES=$(cat "${ACHECKER}" | wc -l)
                             GENREBRUT=$(metaflac --show-tag=genre "$MUSIC" 2> >(tee -a $LOG))
                         elif [[ "$MUSICTEST" == *.mp3 ]]
                             then
-                            GENREBRUT=$(mp3info -p%g "$MUSIC"2>> $LOG 2> >(tee -a $LOG))
+                            GENREBRUT=$(mp3info -p%g "$MUSIC" 2> >(tee -a $LOG))
                         fi
                         GENRE=$(echo "$GENREBRUT" | tr '[:upper:]' '[:lower:]')
                         if [ -z "$GENRE" ]
@@ -100,11 +96,11 @@ NBLIGNES=$(cat "${ACHECKER}" | wc -l)
                                 AAAPASGENRE=$(cat TEMP/AAAPASGENRE)
                                 AAAPASGENRE=$(expr $AAAPASGENRE + 1 )
                                 echo $AAAPASGENRE > TEMP/AAAPASGENRE
-                                echo $MUSIC >> $LOGPASGENRE
+                                echo "$MUSIC" >> "$LOGPASGENRE"
                                 AAAARTALBPASGENRE=$(cat TEMP/AAAARTALBPASGENRE)
                                 AAAARTALBPASGENRE=$(expr $AAAARTALBPASGENRE + 1 )
                                 echo $AAAARTALBPASGENRE > TEMP/AAAARTALBPASGENRE
-                            
+                                echo "Aucun genre spécifié" | tee -a $LOG
                                 if [ $AAAARTALBPASGENRE -eq 1  ]
                                     then
                                     echo "$ARTALB" >> "$LOGPASGENREALBUM"
@@ -118,13 +114,14 @@ NBLIGNES=$(cat "${ACHECKER}" | wc -l)
                                 AAAARTALBOK=$(cat TEMP/AAAARTALBOK)
                                 AAAARTALBOK=$(expr $AAAARTALBOK + 1 )
                                 echo $AAAARTALBOK > TEMP/AAAARTALBOK
-            
+                                echo "Genre correspondant" | tee -a $LOG
                                 if [ -z "$REPLAYGAIN" ]
                                     then
                                     rsgain custom -Ss i "$MUSIC" 2>&1 | tee -a $LOG
                                     AAAARTALBAJOUTS=$(cat TEMP/AAAARTALBAJOUTS)
                                     AAAARTALBAJOUTS=$(expr $AAAARTALBAJOUTS + 1 )
                                     echo $AAAARTALBAJOUTS > TEMP/AAAARTALBAJOUTS
+                                    echo "Aucun ReplayGain, calcul de celui ci..." | tee -a $LOG
                                 fi
                                 if [[ "$MUSICTEST" == *.flac ]]
                                     then
@@ -138,13 +135,13 @@ NBLIGNES=$(cat "${ACHECKER}" | wc -l)
                                     AAAARTALBRSGAIN=$(cat TEMP/AAAARTALBRSGAIN)
                                     AAAARTALBRSGAIN=$(expr $AAAARTALBRSGAIN + 1 )
                                     echo $AAAARTALBRSGAIN > TEMP/AAAARTALBRSGAIN
-                                    
+                                    echo "Replaygain calculé : $REPLAYGAIN" | tee -a $LOG
                                 fi
                 
                                 if [ ! -d "${BASE2}/${ARTALB}" ]
                                     then
                                     mkdir -p "${BASE2}/${ARTALB}"
-                                    
+                                    echo "Liens et répertoires absents, création de ceux ci..." | tee -a $LOG
                                 fi
                                 if [ ! -d "${BASE3}/${ARTALB}" ]
                                     then
@@ -157,17 +154,18 @@ NBLIGNES=$(cat "${ACHECKER}" | wc -l)
                                     AAAARTALBAJOUTS=$(cat TEMP/AAAARTALBAJOUTS)
                                     AAAARTALBAJOUTS=$(expr $AAAARTALBAJOUTS + 1 )
                                     echo $AAAARTALBAJOUTS > TEMP/AAAARTALBAJOUTS
+                                    
                                 fi
                                 if [ -f "${BASE2}/${ARTALB}/${FILE}" ]
                                     then
                                     AAAARTALBLIENS=$(cat TEMP/AAAARTALBLIENS)
                                     AAAARTALBLIENS=$(expr $AAAARTALBLIENS + 1 )
                                     echo $AAAARTALBLIENS > TEMP/AAAARTALBLIENS
-                                    
+                                    echo "Création du lien ok" | tee -a $LOG
                                 fi
                                 if [[ ! -f "${BASE3}/${ARTALB}/${FILE}" && ! -f "${BASE3}/${ARTALB}/${FILEMP3}" ]]
                                     then
-                                    cp "${BASESERVEUR}/${ARTALB}/${FILE}" "${BASE3}/${ARTALB}/${FILE}" 2>> (tee -a $LOG)
+                                    cp "${BASESERVEUR}/${ARTALB}/${FILE}" "${BASE3}/${ARTALB}/${FILE}" 2> >(tee -a $LOG)
                                     AAAARTALBAJOUTS=$(cat TEMP/AAAARTALBAJOUTS)
                                     AAAARTALBAJOUTS=$(expr $AAAARTALBAJOUTS + 1 )
                                     echo $AAAARTALBAJOUTS > TEMP/AAAARTALBAJOUTS
@@ -177,7 +175,7 @@ NBLIGNES=$(cat "${ACHECKER}" | wc -l)
                                     AAAARTALBCOPIES=$(cat TEMP/AAAARTALBCOPIES)
                                     AAAARTALBCOPIES=$(expr $AAAARTALBCOPIES + 1 )
                                     echo $AAAARTALBCOPIES > TEMP/AAAARTALBCOPIES
-                                    
+                                    echo "Création du fichier ok" | tee -a $LOG
                                 fi
                         else
                             AAAPASOK=$(cat TEMP/AAAPASOK)
@@ -186,7 +184,12 @@ NBLIGNES=$(cat "${ACHECKER}" | wc -l)
                             AAAARTALBPASOK=$(cat TEMP/AAAARTALBPASOK)
                             AAAARTALBPASOK=$(expr $AAAARTALBPASOK + 1 )
                             #echo $AAAARTALBPASOK > TEMP/AAAARTALBPASOK
-                            if [ $(grep -c "*$ARTIST*$ALBUM2*" "$LOGNONOK") -lt 1 ]
+                            echo "Genre non sélectionné" | tee -a $LOG
+                            if [[ ! -f "$LOGNONOK" ]]
+                                then
+                                touch "$LOGNONOK"
+                            fi
+                            if [ $(grep -c "*$ARTIST*$ALBUM2*" "$LOGNONOK") -lt "1" ]
                                 then
                                 echo "$ARTALB" >> "$LOGNONOK"
                                 
