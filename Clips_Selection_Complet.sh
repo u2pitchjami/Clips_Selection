@@ -24,6 +24,11 @@ if [ ! -d $DOSLOG ]
 then
 mkdir $DOSLOG
 fi
+if [ ! -f $FICHIERRECAP ]
+then
+touch $FICHIERRECAP
+echo "titre;RSGain" >> $FICHIERRECAP
+fi
 echo 0 > TEMP/AAAOK
 echo 0 > TEMP/AAAPASOK
 echo 0 > TEMP/AAAPASGENRE
@@ -140,6 +145,12 @@ find $BASE/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\
                 AAAARTALBRSGAIN=$(expr $AAAARTALBRSGAIN + 1 )
                 echo $AAAARTALBRSGAIN > TEMP/AAAARTALBRSGAIN
                 #echo "AAAARTALBRSGAIN : $AAAARTALBRSGAIN"
+                SCENEIN=$(grep -e "^${FILE}" "${FICHIERRECAP}")
+                                    if [[ ! -n $SCENEIN ]]
+                                        then
+                                        echo "${FILE};$REPLAYGAIN" >> ${FICHIERRECAP}
+                                        echo "Replaygain ajouté au fichier Recap" | tee -a $LOG
+                                    fi
             fi
         
             if [ ! -d "${BASE2}/${ARTALB}" ]

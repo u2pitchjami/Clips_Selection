@@ -24,6 +24,11 @@ if [ ! -d $DOSLOG ]
 then
 mkdir $DOSLOG
 fi
+if [ ! -f $FICHIERRECAP ]
+then
+touch $FICHIERRECAP
+echo "titre;RSGain" >> $FICHIERRECAP
+fi
 echo 0 > TEMP/AAAOK
 echo 0 > TEMP/AAAPASOK
 echo 0 > TEMP/AAAPASGENRE
@@ -86,9 +91,11 @@ echo "[`date`] - "$NBLIGNES" lignes à traiter" | tee -a $LOG
                         if [[ "$MUSICTEST" == *.flac ]]
                             then
                             GENREBRUT=$(metaflac --show-tag=genre "$MUSIC" 2> >(tee -a $LOG))
+                            REPLAYGAIN=$(metaflac --show-tag=replaygain_track_gain "$MUSIC")
                         elif [[ "$MUSICTEST" == *.mp3 ]]
                             then
                             GENREBRUT=$(mp3info -p%g "$MUSIC" 2> >(tee -a $LOG))
+                            REPLAYGAIN=$(ffprobe -v error -of csv=s=x:p=0 -show_entries format_tags=replaygain_track_gain "$MUSIC")
                         fi
                         GENRE=$(echo "$GENREBRUT" | tr '[:upper:]' '[:lower:]')
                         if [ -z "$GENRE" ]
@@ -115,13 +122,14 @@ echo "[`date`] - "$NBLIGNES" lignes à traiter" | tee -a $LOG
                                 AAAARTALBOK=$(expr $AAAARTALBOK + 1 )
                                 echo $AAAARTALBOK > TEMP/AAAARTALBOK
                                 echo "Genre correspondant" | tee -a $LOG
+                                echo "test replaygain $REPLAYGAIN"
                                 if [ -z "$REPLAYGAIN" ]
                                     then
+                                    echo "Aucun ReplayGain, calcul de celui ci..." | tee -a $LOG
                                     rsgain custom -Ss i "$MUSIC" 2>&1 | tee -a $LOG
                                     AAAARTALBAJOUTS=$(cat TEMP/AAAARTALBAJOUTS)
                                     AAAARTALBAJOUTS=$(expr $AAAARTALBAJOUTS + 1 )
                                     echo $AAAARTALBAJOUTS > TEMP/AAAARTALBAJOUTS
-                                    echo "Aucun ReplayGain, calcul de celui ci..." | tee -a $LOG
                                 fi
                                 if [[ "$MUSICTEST" == *.flac ]]
                                     then
@@ -136,6 +144,13 @@ echo "[`date`] - "$NBLIGNES" lignes à traiter" | tee -a $LOG
                                     AAAARTALBRSGAIN=$(expr $AAAARTALBRSGAIN + 1 )
                                     echo $AAAARTALBRSGAIN > TEMP/AAAARTALBRSGAIN
                                     echo "Replaygain calculé : $REPLAYGAIN" | tee -a $LOG
+                                    SCENEIN=$(grep -e "^${FILE}" "${FICHIERRECAP}")
+                                    if [[ ! -n $SCENEIN ]]
+                                        then
+                                        echo "${FILE};$REPLAYGAIN" >> ${FICHIERRECAP}
+                                        echo "Replaygain ajouté au fichier Recap" | tee -a $LOG
+                                    fi
+                                    
                                 fi
                 
                                 if [ ! -d "${BASE2}/${ARTALB}" ]
