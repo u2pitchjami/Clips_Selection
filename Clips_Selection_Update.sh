@@ -147,7 +147,8 @@ echo "[`date`] - "$NBLIGNES" lignes à traiter" | tee -a $LOG
                                     SCENEIN=$(grep -e "^${FILE}" "${FICHIERRECAP}")
                                     if [[ ! -n $SCENEIN ]]
                                         then
-                                        echo "${FILE};$REPLAYGAIN" >> ${FICHIERRECAP}
+                                        REPLAYGAINFILE=$(echo "$REPLAYGAIN" | cut -d "=" -f2)
+                                        echo "${FILE};$REPLAYGAINFILE" >> ${FICHIERRECAP}
                                         echo "Replaygain ajouté au fichier Recap" | tee -a $LOG
                                     fi
                                     
