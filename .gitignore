@@ -173,3 +173,10 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+logs/2024-11-16-Clips_Selection_AChecker_Update.txt
+logs/2024-11-16-Clips_Selection_PasdeGenre_Update_.txt
+logs/2024-11-16-Clips_Selection_PasdeGenreparAlbum_Update.txt
+logs/2024-11-16-Clips_Selection_RejetGenre_Update.txt
+logs/2024-11-16-Clips_Selection_Update.txt
+logs/2024-11-17-Clips_Selection_RejetGenre_Update.txt
+logs/2024-11-17-Clips_Selection_Update.txt
