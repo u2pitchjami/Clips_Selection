@@ -14,12 +14,13 @@
 ############################################################################## 
 
 #définition des variables
-source /home/pipo/bin/Clips_Selection/.config.cfg
-if [ -d TEMP ]
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+source ${SCRIPT_DIR}/.config.cfg
+if [ -d ${SCRIPT_DIR}/TEMP ]
 then
-rm -r TEMP
+rm -r ${SCRIPT_DIR}/TEMP
 fi
-mkdir TEMP
+mkdir ${SCRIPT_DIR}/TEMP
 if [ ! -d $DOSLOG ]
 then
 mkdir $DOSLOG
@@ -29,17 +30,17 @@ then
 touch $FICHIERRECAP
 echo "titre;RSGain" >> $FICHIERRECAP
 fi
-echo 0 > TEMP/AAAOK
-echo 0 > TEMP/AAAPASOK
-echo 0 > TEMP/AAAPASGENRE
-echo 0 > TEMP/AAAARTALB
-echo 0 > TEMP/AAAARTALBPASGENRE
-echo 0 > TEMP/AAAARTALBPASOK
-echo 0 > TEMP/AAAARTALBOK
-echo 0 > TEMP/AAAARTALBRSGAIN
-echo 0 > TEMP/AAAARTALBLIENS
-echo 0 > TEMP/AAAARTALBCOPIES
-echo 0 > TEMP/AAAARTALBAJOUTS
+echo 0 > ${SCRIPT_DIR}/TEMP/AAAOK
+echo 0 > ${SCRIPT_DIR}/TEMP/AAAPASOK
+echo 0 > ${SCRIPT_DIR}/TEMP/AAAPASGENRE
+echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALB
+echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBPASGENRE
+echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBPASOK
+echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBOK
+echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBRSGAIN
+echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBLIENS
+echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBCOPIES
+echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBAJOUTS
 touch $LOG
 touch $LOGNONOK
 touch $LOGPASGENRE
@@ -84,8 +85,8 @@ find $BASE/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\
         fi
         if [[ "$ARTALBOLD" != "$ARTALB" ]]
             then
-            echo 0 > TEMP/AAAARTALB
-            AAAARTALB=$(cat TEMP/AAAARTALB)
+            echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALB
+            AAAARTALB=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALB)
             #echo "AAAARTALB00 : $AAAARTALB"
             AAAARTALB=$(expr $AAAARTALB + 1 )
             #echo "AAAARTALB : $AAAARTALB"
@@ -101,14 +102,14 @@ find $BASE/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\
 
         if [ -z "$GENRE" ] #Si genre introuvable
             then
-            AAAPASGENRE=$(cat TEMP/AAAPASGENRE)
+            AAAPASGENRE=$(cat ${SCRIPT_DIR}/TEMP/AAAPASGENRE)
             AAAPASGENRE=$(expr $AAAPASGENRE + 1 )
-            echo $AAAPASGENRE > TEMP/AAAPASGENRE
+            echo $AAAPASGENRE > ${SCRIPT_DIR}/TEMP/AAAPASGENRE
             #echo AAAPASGENRE : $AAAPASGENRE
             echo $MUSIC >> $LOGPASGENRE
-            AAAARTALBPASGENRE=$(cat TEMP/AAAARTALBPASGENRE)
+            AAAARTALBPASGENRE=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBPASGENRE)
             AAAARTALBPASGENRE=$(expr $AAAARTALBPASGENRE + 1 )
-            echo $AAAARTALBPASGENRE > TEMP/AAAARTALBPASGENRE
+            echo $AAAARTALBPASGENRE > ${SCRIPT_DIR}/TEMP/AAAARTALBPASGENRE
             #echo "AAAARTALBPASGENRE : $AAAARTALBPASGENRE"
 
             if [ $AAAARTALBPASGENRE -eq 1  ]
@@ -118,19 +119,19 @@ find $BASE/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\
             fi
         elif [[ "$GENRE" == *"techno"* || "$GENRE" == *"house"* || "$GENRE" == *"trance"* || "$GENRE" == *"house"* || "$GENRE" == *"electronic"* || "$GENRE" == *"edm"* || "$GENRE" == *"dance"* || "$GENRE" == *"psychedelic"* || "$GENRE" == *"rave"* || "$GENRE" == *"space"* ]]
             then
-            AAAOK=$(cat TEMP/AAAOK)
+            AAAOK=$(cat ${SCRIPT_DIR}/TEMP/AAAOK)
             AAAOK=$(expr $AAAOK + 1 )
-            echo $AAAOK > TEMP/AAAOK
-            AAAARTALBOK=$(cat TEMP/AAAARTALBOK)
+            echo $AAAOK > ${SCRIPT_DIR}/TEMP/AAAOK
+            AAAARTALBOK=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBOK)
             AAAARTALBOK=$(expr $AAAARTALBOK + 1 )
-            echo $AAAARTALBOK > TEMP/AAAARTALBOK
+            echo $AAAARTALBOK > ${SCRIPT_DIR}/TEMP/AAAARTALBOK
             #echo "AAAARTALBOK : $AAAARTALBOK"
             if [ -z "$REPLAYGAIN" ]
                 then
                 rsgain custom -Ss i "$MUSIC" 2>&1 | tee -a $LOG
-                AAAARTALBAJOUTS=$(cat TEMP/AAAARTALBAJOUTS)
+                AAAARTALBAJOUTS=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBAJOUTS)
                 AAAARTALBAJOUTS=$(expr $AAAARTALBAJOUTS + 1 )
-                echo $AAAARTALBAJOUTS > TEMP/AAAARTALBAJOUTS
+                echo $AAAARTALBAJOUTS > ${SCRIPT_DIR}/TEMP/AAAARTALBAJOUTS
             fi
             if [[ "$MUSICTEST" == *.flac ]]
                 then
@@ -141,9 +142,9 @@ find $BASE/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\
             fi
             if [ -n "$REPLAYGAIN" ]
                 then
-                AAAARTALBRSGAIN=$(cat TEMP/AAAARTALBRSGAIN)
+                AAAARTALBRSGAIN=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBRSGAIN)
                 AAAARTALBRSGAIN=$(expr $AAAARTALBRSGAIN + 1 )
-                echo $AAAARTALBRSGAIN > TEMP/AAAARTALBRSGAIN
+                echo $AAAARTALBRSGAIN > ${SCRIPT_DIR}/TEMP/AAAARTALBRSGAIN
                 #echo "AAAARTALBRSGAIN : $AAAARTALBRSGAIN"
                 SCENEIN=$(grep -e "^${FILE}" "${FICHIERRECAP}")
                                     if [[ ! -n $SCENEIN ]]
@@ -167,40 +168,40 @@ find $BASE/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\
             if [ ! -h "${BASE2}/${ARTALB}/${FILE}" ]
                 then
                 ln -s "${BASESERVEUR}/${ARTALB}/${FILE}" "${BASE2}/${ARTALB}/${FILE}" 2> >(tee -a $LOG)
-                AAAARTALBAJOUTS=$(cat TEMP/AAAARTALBAJOUTS)
+                AAAARTALBAJOUTS=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBAJOUTS)
                 AAAARTALBAJOUTS=$(expr $AAAARTALBAJOUTS + 1 )
-                echo $AAAARTALBAJOUTS > TEMP/AAAARTALBAJOUTS
+                echo $AAAARTALBAJOUTS > ${SCRIPT_DIR}/TEMP/AAAARTALBAJOUTS
             fi
             if [[ -f "${BASE2}/${ARTALB}/${FILE}" ]]
                 then
-                AAAARTALBLIENS=$(cat TEMP/AAAARTALBLIENS)
+                AAAARTALBLIENS=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBLIENS)
                 AAAARTALBLIENS=$(expr $AAAARTALBLIENS + 1 )
-                echo $AAAARTALBLIENS > TEMP/AAAARTALBLIENS
+                echo $AAAARTALBLIENS > ${SCRIPT_DIR}/TEMP/AAAARTALBLIENS
                 #echo "AAAARTALBLIENS : $AAAARTALBLIENS"
             fi
             if [[ ! -f "${BASE3}/${ARTALB}/${FILE}" && ! -f "${BASE3}/${ARTALB}/${FILEMP3}" ]]
                 then
                 cp "${BASESERVEUR}/${ARTALB}/${FILE}" "${BASE3}/${ARTALB}/${FILE}" 2> >(tee -a $LOG)
-                AAAARTALBAJOUTS=$(cat TEMP/AAAARTALBAJOUTS)
+                AAAARTALBAJOUTS=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBAJOUTS)
                 AAAARTALBAJOUTS=$(expr $AAAARTALBAJOUTS + 1 )
-                echo $AAAARTALBAJOUTS > TEMP/AAAARTALBAJOUTS
+                echo $AAAARTALBAJOUTS > ${SCRIPT_DIR}/TEMP/AAAARTALBAJOUTS
             fi
             if [[ -f "${BASE3}/${ARTALB}/${FILE}" || -f "${BASE3}/${ARTALB}/${FILEMP3}" ]]
                 then
-                AAAARTALBCOPIES=$(cat TEMP/AAAARTALBCOPIES)
+                AAAARTALBCOPIES=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBCOPIES)
                 AAAARTALBCOPIES=$(expr $AAAARTALBCOPIES + 1 )
-                echo $AAAARTALBCOPIES > TEMP/AAAARTALBCOPIES
+                echo $AAAARTALBCOPIES > ${SCRIPT_DIR}/TEMP/AAAARTALBCOPIES
                 #echo "AAAARTALBCOPIES : $AAAARTALBCOPIES"
             fi
                 
             
         else
-            AAAPASOK=$(cat TEMP/AAAPASOK)
+            AAAPASOK=$(cat ${SCRIPT_DIR}/TEMP/AAAPASOK)
             AAAPASOK=$(expr $AAAPASOK + 1 )
-            #echo $AAAPASOK > TEMP/AAAPASOK
-            AAAARTALBPASOK=$(cat TEMP/AAAARTALBPASOK)
+            #echo $AAAPASOK > ${SCRIPT_DIR}/TEMP/AAAPASOK
+            AAAARTALBPASOK=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBPASOK)
             AAAARTALBPASOK=$(expr $AAAARTALBPASOK + 1 )
-            #echo $AAAARTALBPASOK > TEMP/AAAARTALBPASOK
+            #echo $AAAARTALBPASOK > ${SCRIPT_DIR}/TEMP/AAAARTALBPASOK
             if [ $(grep -c "*$ARTIST*$ALBUM2*" "$LOGNONOK") -lt 1 ]
                 then
                 echo "$ARTALB" >> "$LOGNONOK"
@@ -208,17 +209,17 @@ find $BASE/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\
             fi
         fi
         NBARTALB=$(find "$BASECONTROL/$ARTALB"/* \( -iname "*.flac" -o -iname "*.mp3" \) | wc -l)
-        AAAARTALBPASOK=$(cat TEMP/AAAARTALBPASOK)
-        AAAARTALBOK=$(cat TEMP/AAAARTALBOK)
-        AAAARTALBPASGENRE=$(cat TEMP/AAAARTALBPASGENRE)
+        AAAARTALBPASOK=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBPASOK)
+        AAAARTALBOK=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBOK)
+        AAAARTALBPASGENRE=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBPASGENRE)
         
         if [[ "$NBARTALB" == "$AAAARTALB" ]]
             then
             if [[ "$AAAARTALBOK" == "$NBARTALB" ]]
                 then
-                AAAARTALBCOPIES=$(cat TEMP/AAAARTALBCOPIES)
-                AAAARTALBLIENS=$(cat TEMP/AAAARTALBLIENS)
-                AAAARTALBRSGAIN=$(cat TEMP/AAAARTALBRSGAIN)
+                AAAARTALBCOPIES=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBCOPIES)
+                AAAARTALBLIENS=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBLIENS)
+                AAAARTALBRSGAIN=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBRSGAIN)
                 if [[ "$AAAARTALBCOPIES" == "$AAAARTALBOK" && "$AAAARTALBLIENS" == "$AAAARTALBOK" && "$AAAARTALBRSGAIN" == "$AAAARTALBOK" ]]
                     then
                     echo "[`date`] - "$ARTALB" : tout est OK" | tee -a $LOG
@@ -241,19 +242,19 @@ find $BASE/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\
                 then
                 echo "[`date`] - "$ARTALB" : non sélectionné" | tee -a $LOG
             fi
-            AAAARTALBAJOUTS=$(cat TEMP/AAAARTALBAJOUTS)
+            AAAARTALBAJOUTS=$(cat ${SCRIPT_DIR}/TEMP/AAAARTALBAJOUTS)
             if [[ "$AAARTALBAJOUTS" -ge "1" ]]
             then
             echo "[`date`] - "$ARTALB" : $AAARTALBAJOUTS ajouts" | tee -a $LOGAJOUTS
             fi
-            echo 0 > TEMP/AAAARTALBAJOUTS
-            echo 0 > TEMP/AAAARTALB
-            echo 0 > TEMP/AAAARTALBPASGENRE
-            echo 0 > TEMP/AAAARTALBPASOK
-            echo 0 > TEMP/AAAARTALBOK
-            echo 0 > TEMP/AAAARTALBRSGAIN
-            echo 0 > TEMP/AAAARTALBLIENS
-            echo 0 > TEMP/AAAARTALBCOPIES
+            echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBAJOUTS
+            echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALB
+            echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBPASGENRE
+            echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBPASOK
+            echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBOK
+            echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBRSGAIN
+            echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBLIENS
+            echo 0 > ${SCRIPT_DIR}/TEMP/AAAARTALBCOPIES
         fi
     done
 
@@ -264,9 +265,9 @@ find $BASE/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\
 
 echo
 echo "[`date`] - OK terminé, voici le résultat :" | tee -a $LOG
-AAAOK=$(cat TEMP/AAAOK)
-AAAPASOK=$(cat TEMP/AAAPASOK)
-AAAPASGENRE=$(cat TEMP/AAAPASGENRE)
+AAAOK=$(cat ${SCRIPT_DIR}/TEMP/AAAOK)
+AAAPASOK=$(cat ${SCRIPT_DIR}/TEMP/AAAPASOK)
+AAAPASGENRE=$(cat ${SCRIPT_DIR}/TEMP/AAAPASGENRE)
 TOTAL=$(expr $AAAPASOK + $AAAOK + $AAAPASGENRE )
 PCOK=$((AAAOK *100 / TOTAL))
 PCPG=$((AAAPASGENRE *100 / TOTAL))
@@ -275,4 +276,4 @@ echo "[`date`] - $AAAOK fichiers sélectionnés ($PCOK %)" | tee -a $LOG
 echo "[`date`] - $AAAPASGENRE fichiers avec aucun genre spécifié ($PCPG %)" | tee -a $LOG
 echo "" | tee -a $LOG
 echo "[`date`] - Voilà c'est fini, bisous" | tee -a $LOG
-rm -r TEMP
+rm -r ${SCRIPT_DIR}/TEMP
