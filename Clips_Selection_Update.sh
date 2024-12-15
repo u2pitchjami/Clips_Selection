@@ -55,7 +55,7 @@ if [ -f $CONFIG_NORMAL ]; then
     mv "${CONFIG}" "${CONFIG_MANUEL}"
     mv "${CONFIG_NORMAL}" "${CONFIG}"
 fi
-
+source $BEETS_ENV
 
 echo "[`date`] - Let's go" | tee -a $LOG
 
