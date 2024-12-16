@@ -10,6 +10,11 @@
 The purpose of this script is to select mp3 or flac by genre for electro techno mix.
 
 ![image](https://github.com/user-attachments/assets/2a575acb-2400-44fd-89e4-95df31719aa7)
+## Requirements
+
+metaflac, mp3info, ffprobe, rsgain
+
+
 ## Installation
 
 ### 1 - Clone the repository :
