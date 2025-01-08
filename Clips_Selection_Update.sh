@@ -179,7 +179,7 @@ do
                 if [ $AAAARTALBPASGENRE -eq 1  ]; then
                     echo "$ARTALB" >> "$LOGPASGENREALBUM"
                 fi
-            elif [[ "$GENRE" == *"techno"* || "$GENRE" == *"house"* || "$GENRE" == *"trance"* || "$GENRE" == *"house"* || "$GENRE" == *"electronic"* || "$GENRE" == *"edm"* || "$GENRE" == *"dance"* || "$GENRE" == *"psychedelic"* || "$GENRE" == *"rave"* || "$GENRE" == *"space"* ]]; then
+            elif [[ "$GENRE" == *"techno"* || "$GENRE" == *"house"* || "$GENRE" == *"trance"* || "$GENRE" == *"house"* || "$GENRE" == *"edm"* || "$GENRE" == *"dance"* || "$GENRE" == *"psychedelic"* || "$GENRE" == *"rave"* || "$GENRE" == *"space"* ]]; then
                 AAAOK=$(cat ${SCRIPT_DIR}/TEMP/AAAOK)
                 AAAOK=$(expr $AAAOK + 1 )
                 echo $AAAOK > ${SCRIPT_DIR}/TEMP/AAAOK

@@ -117,7 +117,7 @@ find $BASE/* \( -iname "*.flac" -o -iname "*.mp3" \) -print0 | while read -d $'\
                 echo "$ARTALB" >> "$LOGPASGENREALBUM"
                 
             fi
-        elif [[ "$GENRE" == *"techno"* || "$GENRE" == *"house"* || "$GENRE" == *"trance"* || "$GENRE" == *"house"* || "$GENRE" == *"electronic"* || "$GENRE" == *"edm"* || "$GENRE" == *"dance"* || "$GENRE" == *"psychedelic"* || "$GENRE" == *"rave"* || "$GENRE" == *"space"* ]]
+        elif [[ "$GENRE" == *"techno"* || "$GENRE" == *"house"* || "$GENRE" == *"trance"* || "$GENRE" == *"edm"* || "$GENRE" == *"dance"* || "$GENRE" == *"psychedelic"* || "$GENRE" == *"rave"* || "$GENRE" == *"space"* ]]
             then
             AAAOK=$(cat ${SCRIPT_DIR}/TEMP/AAAOK)
             AAAOK=$(expr $AAAOK + 1 )
